@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RutaSegura Cartagena</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="logo">Ruta<span>Segura</span></a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">&#9776;</button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="activo">Inicio</a></li>
+        <li><a href="pages/reportes.html">Ver reportes</a></li>
+        <li><a href="pages/crear-reporte.html">Reportar</a></li>
+        <li><a href="pages/mis-reportes.html">Mis reportes</a></li>
+        <li><a href="pages/admin.html">Panel admin</a></li>
+        <li><a href="pages/login.html">Ingresar</a></li>
+        <li><a href="pages/registro.html">Registrarse</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+
+      <section class="hero">
+        <h1>RutaSegura Cartagena</h1>
+        <p>Reporta y consulta acumulaciones de agua en las vías durante las lluvias.</p>
+        <div class="acciones">
+          <a href="pages/reportes.html" class="btn btn-secundario">Ver reportes</a>
+          <a href="pages/crear-reporte.html" class="btn btn-primario">Reportar</a>
+        </div>
+      </section>
+
+      <h2>Últimos reportes</h2>
+      <section class="grid">
+        <article class="card">
+          <div class="card-img">Foto del reporte</div>
+          <div class="card-body">
+            <h3>Vía principal La Gran Manzana</h3>
+            <p>Ciudad Jardín, Cartagena</p>
+            <span class="badge alto">Nivel alto</span>
+            <span class="badge pendiente">Pendiente</span>
+            <p><a href="pages/detalle.html">Ver detalle</a></p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-img">Foto del reporte</div>
+          <div class="card-body">
+            <h3>Entrada al centro comercial</h3>
+            <p>Ciudad Jardín, Cartagena</p>
+            <span class="badge medio">Nivel medio</span>
+            <span class="badge verificado">Verificado</span>
+            <p><a href="pages/detalle.html">Ver detalle</a></p>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-img">Foto del reporte</div>
+          <div class="card-body">
+            <h3>Calle lateral norte</h3>
+            <p>Ciudad Jardín, Cartagena</p>
+            <span class="badge bajo">Nivel bajo</span>
+            <span class="badge resuelto">Resuelto</span>
+            <p><a href="pages/detalle.html">Ver detalle</a></p>
+          </div>
+        </article>
+      </section>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>RutaSegura Cartagena &copy; <span id="anio"></span> · Aplicaciones Web · UNINÚÑEZ</p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
