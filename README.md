@@ -6,7 +6,7 @@ Proyecto de la asignatura **Aplicaciones Web** · Corporación Universitaria Raf
 
 ## Integrantes
 - Yoimar David Julio (Yodav009)
-- Yoiser Jose Mendoza
+- Yoiser Jose Mendoza (ymendozaf21-bit)
 - Juan Diego Julio
 - Eder Pedroza
 
