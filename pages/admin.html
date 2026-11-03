@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel admin - RutaSegura Cartagena</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <div id="navbar" data-base="../" data-activa="admin"></div>
+  <main>
+    <div class="container">
+      <div id="aviso"></div>
+      <div id="panel" style="display:none">
+        <h1>Panel de administración</h1>
+        <p class="subtitulo">Revisa y gestiona todos los reportes.</p>
+
+        <section class="grid" style="margin-bottom:1.25rem">
+          <div class="card"><div class="card-body"><h3>Pendientes</h3><p style="font-size:2rem;font-weight:700" id="nPend">0</p></div></div>
+          <div class="card"><div class="card-body"><h3>Verificados</h3><p style="font-size:2rem;font-weight:700" id="nVer">0</p></div></div>
+          <div class="card"><div class="card-body"><h3>Resueltos</h3><p style="font-size:2rem;font-weight:700" id="nRes">0</p></div></div>
+        </section>
+
+        <div class="filtros">
+          <select id="fEstado">
+            <option value="">Todos los estados</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="verificado">Verificado</option>
+            <option value="resuelto">Resuelto</option>
+          </select>
+        </div>
+
+        <div class="tabla-wrap">
+          <table>
+            <thead>
+              <tr><th>ID</th><th>Ubicación</th><th>Nivel</th><th>Estado</th><th>Fecha</th><th>Acción</th></tr>
+            </thead>
+            <tbody id="filas"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+  <div id="footer"></div>
+
+  <script src="../js/validaciones.js"></script>
+  <script src="../js/reportes.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    const sesion = obtenerSesion();
+    if (!sesion || sesion.rol !== 'admin') {
+      document.getElementById('aviso').innerHTML =
+        '<div class="alerta error" style="display:block">Solo el administrador puede ver este panel. <a href="login.html">Ingresar</a></div>';
+    } else {
+      document.getElementById('panel').style.display = 'block';
+      const fEstado = document.getElementById('fEstado');
+
+      function pintar() {
+        const todos = obtenerReportes();
+        document.getElementById('nPend').textContent = todos.filter(function (r) { return r.estado === 'pendiente'; }).length;
+        document.getElementById('nVer').textContent = todos.filter(function (r) { return r.estado === 'verificado'; }).length;
+        document.getElementById('nRes').textContent = todos.filter(function (r) { return r.estado === 'resuelto'; }).length;
+
+        const datos = todos
+          .filter(function (r) { return fEstado.value === '' || r.estado === fEstado.value; })
+          .sort(function (a, b) { return new Date(b.fecha) - new Date(a.fecha); });
+
+        document.getElementById('filas').innerHTML = datos.length
+          ? datos.map(function (r) {
+              return '<tr>' +
+                '<td>#' + r.id + '</td>' +
+                '<td>' + escapeHtml(r.ubicacion) + '</td>' +
+                '<td><span class="badge ' + r.nivel + '">' + capitalizar(r.nivel) + '</span></td>' +
+                '<td><span class="badge ' + r.estado + '">' + capitalizar(r.estado) + '</span></td>' +
+                '<td>' + formatoFecha(r.fecha) + '</td>' +
+                '<td><a class="btn btn-primario" style="padding:0.35rem 0.8rem;font-size:0.9rem" href="gestionar.html?id=' + r.id + '">Gestionar</a></td>' +
+                '</tr>';
+            }).join('')
+          : '<tr><td colspan="6">No hay reportes con ese estado.</td></tr>';
+      }
+
+      fEstado.addEventListener('change', pintar);
+      pintar();
+    }
+  </script>
+</body>
+</html>

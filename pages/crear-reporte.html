@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crear reporte - RutaSegura Cartagena</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <div id="navbar" data-base="../" data-activa="crear"></div>
+  <main>
+    <div class="container">
+      <div id="aviso"></div>
+      <form class="form-card" id="formReporte" novalidate>
+        <h1>Crear reporte</h1>
+        <p class="subtitulo">Cuéntanos dónde hay agua acumulada.</p>
+        <div id="alerta" class="alerta"></div>
+
+        <div class="form-group">
+          <label for="ubicacion">Ubicación</label>
+          <input type="text" id="ubicacion" placeholder="Ej: Av. Pedro de Heredia con calle 30">
+          <div class="error-msg"></div>
+        </div>
+        <div class="form-group">
+          <label for="nivel">Nivel de acumulación</label>
+          <select id="nivel">
+            <option value="">Selecciona un nivel</option>
+            <option value="bajo">Bajo</option>
+            <option value="medio">Medio</option>
+            <option value="alto">Alto</option>
+          </select>
+          <div class="error-msg"></div>
+        </div>
+        <div class="form-group">
+          <label for="descripcion">Descripción</label>
+          <textarea id="descripcion" placeholder="Describe la situación (mínimo 10 caracteres)"></textarea>
+          <div class="error-msg"></div>
+        </div>
+        <div class="form-group">
+          <label for="foto">Foto (opcional)</label>
+          <input type="file" id="foto" accept="image/*">
+          <div class="error-msg"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primario btn-bloque">Enviar reporte</button>
+      </form>
+    </div>
+  </main>
+  <div id="footer"></div>
+
+  <script src="../js/validaciones.js"></script>
+  <script src="../js/reportes.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    const sesion = obtenerSesion();
+    const form = document.getElementById('formReporte');
+
+    if (!sesion) {
+      form.style.display = 'none';
+      document.getElementById('aviso').innerHTML =
+        '<div class="alerta error" style="display:block">Debes iniciar sesión para reportar. <a href="login.html">Ingresar</a> o <a href="registro.html">Registrarse</a></div>';
+    } else {
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const ubicacion = document.getElementById('ubicacion');
+        const nivel = document.getElementById('nivel');
+        const descripcion = document.getElementById('descripcion');
+        const foto = document.getElementById('foto');
+        const archivo = foto.files[0];
+        let ok = true;
+
+        if (ubicacion.value.trim().length < 5) { marcarError(ubicacion, 'Escribe la ubicación (mínimo 5 caracteres).'); ok = false; } else { marcarValido(ubicacion); }
+        if (nivel.value === '') { marcarError(nivel, 'Selecciona un nivel.'); ok = false; } else { marcarValido(nivel); }
+        if (descripcion.value.trim().length < 10) { marcarError(descripcion, 'La descripción debe tener mínimo 10 caracteres.'); ok = false; } else { marcarValido(descripcion); }
+        if (archivo && !archivo.type.startsWith('image/')) { marcarError(foto, 'El archivo debe ser una imagen.'); ok = false; }
+        else if (archivo && archivo.size > 8 * 1024 * 1024) { marcarError(foto, 'La imagen no puede pesar más de 8 MB.'); ok = false; }
+        else { marcarValido(foto); }
+
+        if (!ok) { mostrarAlerta('alerta', 'error', 'Revisa los campos marcados en rojo.'); return; }
+
+        function guardar(dataUrl) {
+          const reportes = obtenerReportes();
+          const id = reportes.length ? Math.max.apply(null, reportes.map(function (r) { return r.id; })) + 1 : 1;
+          const ahora = new Date().toISOString();
+          reportes.push({
+            id: id,
+            ubicacion: ubicacion.value.trim(),
+            descripcion: descripcion.value.trim(),
+            nivel: nivel.value,
+            estado: 'pendiente',
+            fecha: ahora,
+            autor: sesion.correo,
+            autorNombre: sesion.nombre,
+            foto: dataUrl,
+            historial: [{ estado: 'pendiente', fecha: ahora }]
+          });
+          try {
+            guardarReportes(reportes);
+          } catch (err) {
+            mostrarAlerta('alerta', 'error', 'No se pudo guardar el reporte (espacio lleno). Intenta sin foto.');
+            return;
+          }
+          mostrarAlerta('alerta', 'exito', 'Reporte enviado. Redirigiendo al detalle...');
+          setTimeout(function () { window.location.href = 'detalle.html?id=' + id; }, 1200);
+        }
+
+        if (archivo) { fotoComprimida(archivo, guardar); } else { guardar(''); }
+      });
+    }
+  </script>
+</body>
+</html>

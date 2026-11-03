@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis reportes - RutaSegura Cartagena</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <div id="navbar" data-base="../" data-activa="mis"></div>
+  <main>
+    <div class="container">
+      <div id="aviso"></div>
+      <div id="contenido" style="display:none">
+        <h1>Mis reportes</h1>
+        <p class="subtitulo">Aquí ves el estado de los reportes que has enviado.</p>
+        <p class="contador" id="contador"></p>
+        <section class="grid" id="lista"></section>
+      </div>
+    </div>
+  </main>
+  <div id="footer"></div>
+
+  <script src="../js/validaciones.js"></script>
+  <script src="../js/reportes.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    const sesion = obtenerSesion();
+    if (!sesion) {
+      document.getElementById('aviso').innerHTML =
+        '<div class="alerta error" style="display:block">Debes iniciar sesión para ver tus reportes. <a href="login.html">Ingresar</a> o <a href="registro.html">Registrarse</a></div>';
+    } else {
+      document.getElementById('contenido').style.display = 'block';
+      const mios = obtenerReportes()
+        .filter(function (r) { return r.autor === sesion.correo; })
+        .sort(function (a, b) { return new Date(b.fecha) - new Date(a.fecha); });
+
+      document.getElementById('contador').textContent = mios.length + ' reporte(s)';
+      document.getElementById('lista').innerHTML = mios.length
+        ? mios.map(tarjetaReporte).join('')
+        : '<p>Aún no has creado reportes. <a href="crear-reporte.html">Crear mi primer reporte</a></p>';
+    }
+  </script>
+</body>
+</html>

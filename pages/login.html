@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ingresar - RutaSegura Cartagena</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <div id="navbar" data-base="../" data-activa="login"></div>
+  <main>
+    <div class="container">
+      <form class="form-card" id="formLogin" novalidate>
+        <h1>Iniciar sesión</h1>
+        <p class="subtitulo">Ingresa con tu correo y contraseña.</p>
+        <div id="alerta" class="alerta"></div>
+
+        <div class="form-group">
+          <label for="correo">Correo electrónico</label>
+          <input type="email" id="correo" placeholder="correo@ejemplo.com">
+          <div class="error-msg"></div>
+        </div>
+        <div class="form-group">
+          <label for="clave">Contraseña</label>
+          <input type="password" id="clave" placeholder="Tu contraseña">
+          <div class="error-msg"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primario btn-bloque">Ingresar</button>
+        <p class="enlace-centro">¿No tienes cuenta? <a href="registro.html">Regístrate</a></p>
+      </form>
+    </div>
+  </main>
+  <div id="footer"></div>
+
+  <script src="../js/validaciones.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    document.getElementById('formLogin').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const correo = document.getElementById('correo');
+      const clave = document.getElementById('clave');
+      let ok = true;
+
+      if (!correoValido(correo.value.trim())) { marcarError(correo, 'Escribe un correo válido.'); ok = false; } else { marcarValido(correo); }
+      if (clave.value === '') { marcarError(clave, 'Escribe tu contraseña.'); ok = false; } else { marcarValido(clave); }
+      if (!ok) return;
+
+      const usuario = obtenerUsuarios().find(u => u.correo === correo.value.trim().toLowerCase() && u.clave === clave.value);
+      if (!usuario) {
+        mostrarAlerta('alerta', 'error', 'Correo o contraseña incorrectos.');
+        return;
+      }
+      iniciarSesion(usuario);
+      mostrarAlerta('alerta', 'exito', 'Bienvenido, ' + usuario.nombre + '. Redirigiendo...');
+      setTimeout(function () { window.location.href = (usuario.rol === 'admin') ? 'admin.html' : '../index.html'; }, 1000);
+    });
+  </script>
+</body>
+</html>

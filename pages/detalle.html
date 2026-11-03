@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle del reporte - RutaSegura Cartagena</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <div id="navbar" data-base="../" data-activa="reportes"></div>
+  <main>
+    <div class="container">
+      <p><a href="reportes.html">&larr; Volver a los reportes</a></p>
+      <div id="contenido"></div>
+    </div>
+  </main>
+  <div id="footer"></div>
+
+  <script src="../js/validaciones.js"></script>
+  <script src="../js/reportes.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    const id = Number(new URLSearchParams(window.location.search).get('id'));
+    const r = obtenerReportes().find(function (x) { return x.id === id; });
+    const cont = document.getElementById('contenido');
+
+    if (!r) {
+      cont.innerHTML = '<div class="alerta error" style="display:block">No se encontró el reporte.</div>';
+    } else {
+      const foto = r.foto ? '<div class="fotos"><img src="' + r.foto + '" alt="Foto del reporte"></div>' : '';
+      const hist = r.historial.map(function (h) {
+        return '<li><strong>' + capitalizar(h.estado) + '</strong> · ' + formatoFecha(h.fecha) + '</li>';
+      }).join('');
+
+      cont.innerHTML =
+        '<div class="detalle">' +
+        '<h1>' + escapeHtml(r.ubicacion) + '</h1>' + foto +
+        '<dl>' +
+        '<dt>Nivel</dt><dd><span class="badge ' + r.nivel + '">' + capitalizar(r.nivel) + '</span></dd>' +
+        '<dt>Estado</dt><dd><span class="badge ' + r.estado + '">' + capitalizar(r.estado) + '</span></dd>' +
+        '<dt>Fecha</dt><dd>' + formatoFecha(r.fecha) + '</dd>' +
+        '<dt>Reportado por</dt><dd>' + escapeHtml(r.autorNombre) + '</dd>' +
+        '<dt>Descripción</dt><dd>' + escapeHtml(r.descripcion) + '</dd>' +
+        '</dl>' +
+        '<h2 style="margin-top:1.25rem">Historial de estados</h2>' +
+        '<ul class="historial">' + hist + '</ul>' +
+        '</div>';
+    }
+  </script>
+</body>
+</html>

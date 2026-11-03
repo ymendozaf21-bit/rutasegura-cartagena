@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reportes - RutaSegura Cartagena</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <div id="navbar" data-base="../" data-activa="reportes"></div>
+  <main>
+    <div class="container">
+      <h1>Reportes de acumulación de agua</h1>
+      <p class="subtitulo">Filtra por estado, nivel o ubicación.</p>
+
+      <div class="filtros">
+        <select id="fEstado">
+          <option value="">Todos los estados</option>
+          <option value="pendiente">Pendiente</option>
+          <option value="verificado">Verificado</option>
+          <option value="resuelto">Resuelto</option>
+        </select>
+        <select id="fNivel">
+          <option value="">Todos los niveles</option>
+          <option value="bajo">Bajo</option>
+          <option value="medio">Medio</option>
+          <option value="alto">Alto</option>
+        </select>
+        <input type="text" id="fTexto" placeholder="Buscar por ubicación...">
+      </div>
+
+      <p class="contador" id="contador"></p>
+      <section class="grid" id="lista"></section>
+    </div>
+  </main>
+  <div id="footer"></div>
+
+  <script src="../js/validaciones.js"></script>
+  <script src="../js/reportes.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    const fEstado = document.getElementById('fEstado');
+    const fNivel = document.getElementById('fNivel');
+    const fTexto = document.getElementById('fTexto');
+    const lista = document.getElementById('lista');
+
+    function pintar() {
+      const estado = fEstado.value;
+      const nivel = fNivel.value;
+      const texto = fTexto.value.trim().toLowerCase();
+
+      const datos = obtenerReportes()
+        .filter(function (r) {
+          return (estado === '' || r.estado === estado) &&
+                 (nivel === '' || r.nivel === nivel) &&
+                 (texto === '' || r.ubicacion.toLowerCase().includes(texto));
+        })
+        .sort(function (a, b) { return new Date(b.fecha) - new Date(a.fecha); });
+
+      document.getElementById('contador').textContent = datos.length + ' reporte(s) encontrado(s)';
+      lista.innerHTML = datos.length
+        ? datos.map(tarjetaReporte).join('')
+        : '<p>No hay reportes con esos filtros.</p>';
+    }
+
+    fEstado.addEventListener('change', pintar);
+    fNivel.addEventListener('change', pintar);
+    fTexto.addEventListener('input', pintar);
+    pintar();
+  </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro - RutaSegura Cartagena</title>
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <div id="navbar" data-base="../" data-activa="registro"></div>
+  <main>
+    <div class="container">
+      <form class="form-card" id="formRegistro" novalidate>
+        <h1>Crear cuenta</h1>
+        <p class="subtitulo">Regístrate para reportar y hacer seguimiento.</p>
+        <div id="alerta" class="alerta"></div>
+
+        <div class="form-group">
+          <label for="nombre">Nombre completo</label>
+          <input type="text" id="nombre" placeholder="Ej: Laura Pérez">
+          <div class="error-msg"></div>
+        </div>
+        <div class="form-group">
+          <label for="correo">Correo electrónico</label>
+          <input type="email" id="correo" placeholder="correo@ejemplo.com">
+          <div class="error-msg"></div>
+        </div>
+        <div class="form-group">
+          <label for="clave">Contraseña</label>
+          <input type="password" id="clave" placeholder="Mínimo 8 caracteres">
+          <div class="error-msg"></div>
+        </div>
+        <div class="form-group">
+          <label for="confirmar">Confirmar contraseña</label>
+          <input type="password" id="confirmar" placeholder="Repite la contraseña">
+          <div class="error-msg"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primario btn-bloque">Registrarme</button>
+        <p class="enlace-centro">¿Ya tienes cuenta? <a href="login.html">Inicia sesión</a></p>
+      </form>
+    </div>
+  </main>
+  <div id="footer"></div>
+
+  <script src="../js/validaciones.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    document.getElementById('formRegistro').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const nombre = document.getElementById('nombre');
+      const correo = document.getElementById('correo');
+      const clave = document.getElementById('clave');
+      const confirmar = document.getElementById('confirmar');
+      let ok = true;
+
+      if (nombre.value.trim().length < 3) { marcarError(nombre, 'Escribe tu nombre (mínimo 3 letras).'); ok = false; } else { marcarValido(nombre); }
+      if (!correoValido(correo.value.trim())) { marcarError(correo, 'Escribe un correo válido.'); ok = false; } else { marcarValido(correo); }
+      if (clave.value.length < 8) { marcarError(clave, 'La contraseña debe tener mínimo 8 caracteres.'); ok = false; } else { marcarValido(clave); }
+      if (confirmar.value !== clave.value || confirmar.value === '') { marcarError(confirmar, 'Las contraseñas no coinciden.'); ok = false; } else { marcarValido(confirmar); }
+      if (!ok) { mostrarAlerta('alerta', 'error', 'Revisa los campos marcados en rojo.'); return; }
+
+      const usuarios = obtenerUsuarios();
+      const correoLimpio = correo.value.trim().toLowerCase();
+      if (usuarios.some(u => u.correo === correoLimpio)) {
+        marcarError(correo, 'Ese correo ya está registrado.');
+        mostrarAlerta('alerta', 'error', 'Ya existe una cuenta con ese correo.');
+        return;
+      }
+
+      const nuevo = { nombre: nombre.value.trim(), correo: correoLimpio, clave: clave.value, rol: 'ciudadano' };
+      usuarios.push(nuevo);
+      guardarUsuarios(usuarios);
+      iniciarSesion(nuevo);
+      mostrarAlerta('alerta', 'exito', 'Cuenta creada. Redirigiendo...');
+      setTimeout(function () { window.location.href = '../index.html'; }, 1200);
+    });
+  </script>
+</body>
+</html>
