@@ -8,7 +8,7 @@ Proyecto de la asignatura **Aplicaciones Web** · Corporación Universitaria Raf
 - Yoimar David Julio (Yodav009)
 - Yoiser Jose Mendoza (ymendozaf21-bit)
 - Juan Diego Julio
-- Eder Pedroza
+- Eder Pedroza (epedrozal21-stack)
 
 ## Tecnologías
 - HTML5, CSS3 (diseño responsivo con media queries)
