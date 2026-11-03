@@ -5,7 +5,7 @@ Aplicación web para reportar y consultar acumulaciones de agua en las vías de 
 Proyecto de la asignatura **Aplicaciones Web** · Corporación Universitaria Rafael Núñez (UNINÚÑEZ).
 
 ## Integrantes
-- Yoimar David Julio
+- Yoimar David Julio (Yodav009)
 - Yoiser Jose Mendoza
 - Juan Diego Julio
 - Eder Pedroza
