@@ -41,3 +41,14 @@ Proyecto de la asignatura **Aplicaciones Web** · Corporación Universitaria Raf
 - Contraseña: `Admin123`
 
 ## Estructura
+```
+index.html
+css/styles.css
+js/main.js, validaciones.js, reportes.js
+pages/ (registro, login, reportes, detalle, crear-reporte, mis-reportes, admin, gestionar)
+```
+
+## Próximos pasos
+- Servidor con Node.js y Express
+- Base de datos MySQL
+- Cifrado de contraseñas y autenticación real
